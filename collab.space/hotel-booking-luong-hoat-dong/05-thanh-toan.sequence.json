@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "05 · Thanh toán VNPAY và xác nhận bằng IPN",
+    "quality_profile": "showcase",
+    "column_fit": "spread",
+    "viewBox": [
+      1080,
+      990
+    ]
+  },
+  "participants": [
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "Trình duyệt",
+      "sublabel": "React"
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Spring Boot",
+      "sublabel": "Kiểm tra giao dịch"
+    },
+    {
+      "id": "pg",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "Booking và payment"
+    },
+    {
+      "id": "vnpay",
+      "type": "external",
+      "label": "VNPAY",
+      "sublabel": "Cổng thanh toán"
+    }
+  ],
+  "messages": [
+    {
+      "id": "step_1",
+      "from": "web",
+      "to": "api",
+      "y": 190,
+      "label": "Yêu cầu thanh toán qua /api",
+      "variant": "default"
+    },
+    {
+      "id": "step_2",
+      "from": "api",
+      "to": "pg",
+      "y": 244,
+      "label": "Đọc đơn còn hạn; tạo payment_attempt",
+      "variant": "default"
+    },
+    {
+      "id": "step_3",
+      "from": "api",
+      "to": "web",
+      "y": 298,
+      "label": "URL VNPAY đã ký, tiền sau voucher",
+      "variant": "return"
+    },
+    {
+      "id": "step_4",
+      "from": "web",
+      "to": "vnpay",
+      "y": 352,
+      "label": "HTTPS · khách thực hiện thanh toán",
+      "variant": "default"
+    },
+    {
+      "id": "step_5",
+      "from": "vnpay",
+      "to": "web",
+      "y": 406,
+      "label": "Return URL về ứng dụng",
+      "variant": "return"
+    },
+    {
+      "id": "step_6",
+      "from": "web",
+      "to": "api",
+      "y": 460,
+      "label": "Đọc trạng thái; có thể còn đang xử lý",
+      "variant": "default"
+    },
+    {
+      "id": "step_7",
+      "from": "vnpay",
+      "to": "api",
+      "y": 514,
+      "label": "IPN HTTPS qua Cloudflare và Nginx",
+      "variant": "dashed"
+    },
+    {
+      "id": "step_8",
+      "from": "api",
+      "to": "pg",
+      "y": 568,
+      "label": "Chỉ sau xác thực: khóa đơn, chống lặp",
+      "variant": "security"
+    },
+    {
+      "id": "step_9",
+      "from": "pg",
+      "to": "api",
+      "y": 622,
+      "label": "Đối chiếu đơn, tiền, currency, tham chiếu",
+      "variant": "return"
+    },
+    {
+      "id": "step_10",
+      "from": "api",
+      "to": "pg",
+      "y": 676,
+      "label": "SUCCEEDED; CONFIRMED; HELD → CONFIRMED",
+      "variant": "emphasis"
+    },
+    {
+      "id": "step_11",
+      "from": "api",
+      "to": "pg",
+      "y": 730,
+      "label": "Ghi lịch sử, thông báo/outbox; COMMIT",
+      "variant": "default"
+    },
+    {
+      "id": "step_12",
+      "from": "api",
+      "to": "vnpay",
+      "y": 784,
+      "label": "Trả mã phản hồi IPN theo hợp đồng",
+      "variant": "return"
+    },
+    {
+      "id": "step_13",
+      "from": "web",
+      "to": "api",
+      "y": 838,
+      "label": "Lấy lại trạng thái đơn từ server",
+      "variant": "default"
+    },
+    {
+      "id": "step_14",
+      "from": "api",
+      "to": "web",
+      "y": 892,
+      "label": "Hiển thị CONFIRMED khi server xác nhận",
+      "variant": "return"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "Hai đường độc lập",
+      "items": [
+        "Ví dụ minh họa Return URL đến trước IPN; thứ tự thực tế có thể đảo hoặc IPN được gửi lại.",
+        "Phải xác thực chữ ký/tham số trước mọi tác động nghiệp vụ. Trang trình duyệt báo thành công chưa đủ để xác nhận đơn."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Nhánh phải xử lý",
+      "items": [
+        "Sai chữ ký, tiền hoặc tham chiếu: không xác nhận. IPN lặp: không thu/trừ tồn lần hai.",
+        "Tiền đến sau hủy/hết hạn: ghi nhận và xử lý hoàn, không hồi sinh đơn. Timeout chưa đồng nghĩa FAILED; giao thức/mã phản hồi chi tiết phải chốt theo VNPAY."
+      ]
+    }
+  ]
+}

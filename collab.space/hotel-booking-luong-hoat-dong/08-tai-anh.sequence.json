@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "08 · Tải ảnh lên Cloudflare R2",
+    "quality_profile": "showcase",
+    "column_fit": "spread",
+    "viewBox": [
+      1080,
+      882
+    ]
+  },
+  "participants": [
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "Trình duyệt",
+      "sublabel": "Chủ hotel / người dùng"
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Spring Boot",
+      "sublabel": "Qua Cloudflare/Nginx"
+    },
+    {
+      "id": "pg",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "Media và liên kết ảnh"
+    },
+    {
+      "id": "r2",
+      "type": "cloud",
+      "label": "Cloudflare R2",
+      "sublabel": "Object storage"
+    }
+  ],
+  "messages": [
+    {
+      "id": "step_1",
+      "from": "web",
+      "to": "api",
+      "y": 190,
+      "label": "Yêu cầu tải ảnh và metadata qua /api",
+      "variant": "default"
+    },
+    {
+      "id": "step_2",
+      "from": "api",
+      "to": "pg",
+      "y": 244,
+      "label": "Kiểm tra quyền; tạo media PENDING",
+      "variant": "security"
+    },
+    {
+      "id": "step_3",
+      "from": "api",
+      "to": "r2",
+      "y": 298,
+      "label": "S3 API · chuẩn bị URL tải có hạn",
+      "variant": "default"
+    },
+    {
+      "id": "step_4",
+      "from": "api",
+      "to": "web",
+      "y": 352,
+      "label": "URL ký trước và object key được phép",
+      "variant": "return"
+    },
+    {
+      "id": "step_5",
+      "from": "web",
+      "to": "r2",
+      "y": 406,
+      "label": "HTTPS PUT · tải ảnh trực tiếp",
+      "variant": "default"
+    },
+    {
+      "id": "step_6",
+      "from": "r2",
+      "to": "web",
+      "y": 460,
+      "label": "Kết quả upload",
+      "variant": "return"
+    },
+    {
+      "id": "step_7",
+      "from": "web",
+      "to": "api",
+      "y": 514,
+      "label": "Yêu cầu hoàn tất media",
+      "variant": "default"
+    },
+    {
+      "id": "step_8",
+      "from": "api",
+      "to": "r2",
+      "y": 568,
+      "label": "S3 API · kiểm tra object thực tồn tại",
+      "variant": "default"
+    },
+    {
+      "id": "step_9",
+      "from": "r2",
+      "to": "api",
+      "y": 622,
+      "label": "Metadata object: loại và kích thước",
+      "variant": "return"
+    },
+    {
+      "id": "step_10",
+      "from": "api",
+      "to": "pg",
+      "y": 676,
+      "label": "Kiểm tra nội dung; READY và liên kết ảnh",
+      "variant": "emphasis"
+    },
+    {
+      "id": "step_11",
+      "from": "api",
+      "to": "web",
+      "y": 730,
+      "label": "URL phân phối ảnh theo chính sách",
+      "variant": "return"
+    },
+    {
+      "id": "step_12",
+      "from": "web",
+      "to": "r2",
+      "y": 784,
+      "label": "HTTPS GET · đọc ảnh được phép",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "amber",
+      "title": "Phương án đề xuất từ ảnh",
+      "items": [
+        "Ảnh gốc có trình duyệt tải ảnh và backend dùng S3 API; URL ký trước là phương án triển khai đề xuất.",
+        "Bước chuẩn bị URL được ký bằng S3 client; không bắt buộc gửi một request mạng đến R2 để tạo chữ ký."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Ràng buộc media",
+      "items": [
+        "Không cấp khóa S3 cho trình duyệt; URL ký trước có hạn, giới hạn object và quyền thao tác.",
+        "Chưa kiểm tra xong giữ PENDING, không tự READY theo lời client. Một cover/hotel, cover/loại phòng, avatar/user; không lưu URL ký trước làm địa chỉ lâu dài."
+      ]
+    }
+  ]
+}

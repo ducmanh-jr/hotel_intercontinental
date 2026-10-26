@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "deliver",
+  "type": "sequence",
+  "input": "C:\\Users\\DWNG\\Documents\\CODE\\ĐỒ ÁN TỔNG HỢP\\database\\flow-diagrams\\04-tao-booking.sequence.json",
+  "output": "C:\\Users\\DWNG\\Documents\\CODE\\ĐỒ ÁN TỔNG HỢP\\database\\flow-diagrams\\04-tao-booking.html",
+  "specification": {
+    "sha256": "84d552cd3f19f480579ebc586e96cb9368b5ea04418bfb587938f2f4d48b4eb1",
+    "bytes": 3792
+  },
+  "artifact": {
+    "sha256": "06dcaad596a4fe3c456d0e6ead0e2a37f419a74ae4b2285e9497bcb8e5f1959a",
+    "bytes": 806657
+  },
+  "validation": {
+    "checksPassed": 9,
+    "checkCount": 9,
+    "compositionProfile": "showcase",
+    "compositionStatus": "pass",
+    "errors": 0,
+    "warnings": 0
+  }
+}

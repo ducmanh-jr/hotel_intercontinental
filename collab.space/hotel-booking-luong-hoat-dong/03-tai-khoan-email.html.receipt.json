@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "deliver",
+  "type": "sequence",
+  "input": "C:\\Users\\DWNG\\Documents\\CODE\\ĐỒ ÁN TỔNG HỢP\\database\\flow-diagrams\\03-tai-khoan-email.sequence.json",
+  "output": "C:\\Users\\DWNG\\Documents\\CODE\\ĐỒ ÁN TỔNG HỢP\\database\\flow-diagrams\\03-tai-khoan-email.html",
+  "specification": {
+    "sha256": "8367a74ce66c9df578fa6deb57f4d9f5f906e22cf29c68f4e564a81ecabc73c0",
+    "bytes": 3704
+  },
+  "artifact": {
+    "sha256": "258c4348301f4fba531ef6f913eb1104d7da3af6c4bf4d7e294cebf6fa7d9189",
+    "bytes": 807212
+  },
+  "validation": {
+    "checksPassed": 9,
+    "checkCount": 9,
+    "compositionProfile": "showcase",
+    "compositionStatus": "pass",
+    "errors": 0,
+    "warnings": 0
+  }
+}

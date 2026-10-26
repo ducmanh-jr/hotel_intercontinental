@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "deliver",
+  "type": "sequence",
+  "input": "C:\\Users\\DWNG\\Documents\\CODE\\ĐỒ ÁN TỔNG HỢP\\database\\flow-diagrams\\08-tai-anh.sequence.json",
+  "output": "C:\\Users\\DWNG\\Documents\\CODE\\ĐỒ ÁN TỔNG HỢP\\database\\flow-diagrams\\08-tai-anh.html",
+  "specification": {
+    "sha256": "8682241c830674e327e6feaf4369e98bb0c832782c7f4330daa9b63fe079b568",
+    "bytes": 3744
+  },
+  "artifact": {
+    "sha256": "81d04ddfd75f56098ea8fec4ed489e07357043a02b0c73073ddd3eb31e6f6143",
+    "bytes": 806321
+  },
+  "validation": {
+    "checksPassed": 9,
+    "checkCount": 9,
+    "compositionProfile": "showcase",
+    "compositionStatus": "pass",
+    "errors": 0,
+    "warnings": 0
+  }
+}

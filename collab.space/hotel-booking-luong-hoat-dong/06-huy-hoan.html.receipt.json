@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "deliver",
+  "type": "sequence",
+  "input": "C:\\Users\\DWNG\\Documents\\CODE\\ĐỒ ÁN TỔNG HỢP\\database\\flow-diagrams\\06-huy-hoan.sequence.json",
+  "output": "C:\\Users\\DWNG\\Documents\\CODE\\ĐỒ ÁN TỔNG HỢP\\database\\flow-diagrams\\06-huy-hoan.html",
+  "specification": {
+    "sha256": "8e3f9172c48a50f863808e06e7d6f639f3a3cc047ccaec8c9ce058ffbb282461",
+    "bytes": 3877
+  },
+  "artifact": {
+    "sha256": "79ea824fc4bb17717a070dcd96e3191a72ff7f37ad8404a8cdd3ffe5541cb9d8",
+    "bytes": 806839
+  },
+  "validation": {
+    "checksPassed": 9,
+    "checkCount": 9,
+    "compositionProfile": "showcase",
+    "compositionStatus": "pass",
+    "errors": 0,
+    "warnings": 0
+  }
+}

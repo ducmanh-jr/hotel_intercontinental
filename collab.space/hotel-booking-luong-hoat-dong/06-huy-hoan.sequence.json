@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "06 · Hủy đơn và hoàn tiền theo khoản thực thu",
+    "quality_profile": "showcase",
+    "column_fit": "spread",
+    "viewBox": [
+      1080,
+      882
+    ]
+  },
+  "participants": [
+    {
+      "id": "actor",
+      "type": "frontend",
+      "label": "Người yêu cầu",
+      "sublabel": "Khách / nhân sự có quyền"
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Spring Boot",
+      "sublabel": "Chính sách đã lưu"
+    },
+    {
+      "id": "pg",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "Booking · payment · refund"
+    },
+    {
+      "id": "vnpay",
+      "type": "external",
+      "label": "VNPAY",
+      "sublabel": "Tra cứu / hoàn tiền"
+    }
+  ],
+  "messages": [
+    {
+      "id": "step_1",
+      "from": "actor",
+      "to": "api",
+      "y": 190,
+      "label": "Yêu cầu hủy đơn và lý do qua /api",
+      "variant": "default"
+    },
+    {
+      "id": "step_2",
+      "from": "api",
+      "to": "pg",
+      "y": 244,
+      "label": "Kiểm tra người, hotel, trạng thái, chính sách",
+      "variant": "security"
+    },
+    {
+      "id": "step_3",
+      "from": "pg",
+      "to": "api",
+      "y": 298,
+      "label": "Khoản thực thu và hạn mức hoàn còn lại",
+      "variant": "return"
+    },
+    {
+      "id": "step_4",
+      "from": "api",
+      "to": "pg",
+      "y": 352,
+      "label": "Khóa đơn; CANCELLED; trả phần tồn hợp lệ",
+      "variant": "default"
+    },
+    {
+      "id": "step_5",
+      "from": "api",
+      "to": "actor",
+      "y": 406,
+      "label": "Đã hủy; tiền hoàn có trạng thái riêng",
+      "variant": "return"
+    },
+    {
+      "id": "step_6",
+      "from": "api",
+      "to": "pg",
+      "y": 460,
+      "label": "Nếu được hoàn: tạo refund chống lặp",
+      "variant": "default"
+    },
+    {
+      "id": "step_7",
+      "from": "api",
+      "to": "vnpay",
+      "y": 514,
+      "label": "Gửi yêu cầu hoàn đúng giao dịch gốc",
+      "variant": "default"
+    },
+    {
+      "id": "step_8",
+      "from": "vnpay",
+      "to": "api",
+      "y": 568,
+      "label": "Kết quả hoàn hoặc đang xử lý",
+      "variant": "return"
+    },
+    {
+      "id": "step_9",
+      "from": "api",
+      "to": "vnpay",
+      "y": 622,
+      "label": "Nếu chưa rõ kết quả: tra cứu, không hoàn lại",
+      "variant": "default"
+    },
+    {
+      "id": "step_10",
+      "from": "api",
+      "to": "pg",
+      "y": 676,
+      "label": "Cập nhật refund theo kết quả xác thực",
+      "variant": "emphasis"
+    },
+    {
+      "id": "step_11",
+      "from": "api",
+      "to": "pg",
+      "y": 730,
+      "label": "Lưu lịch sử và thông báo/outbox",
+      "variant": "default"
+    },
+    {
+      "id": "step_12",
+      "from": "api",
+      "to": "actor",
+      "y": 784,
+      "label": "Hiển thị khoản hoàn và trạng thái cuối",
+      "variant": "return"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Số tiền và điều kiện",
+      "items": [
+        "Luồng hoàn chỉ chạy khi có khoản thu và chính sách cho phép; hủy trước thanh toán không cần gọi hoàn.",
+        "Tổng hoàn thành công + đang yêu cầu không vượt thực thu sau voucher; refund phải thuộc đúng booking/payment."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Ngoại lệ độc lập",
+      "items": [
+        "Hết hạn: tác vụ nền giải phóng giữ chỗ đúng một lần. Tiền đến muộn chuyển sang xử lý hoàn phù hợp.",
+        "CANCELLED không có nghĩa đã hoàn tiền. Chính sách hủy, mức hoàn và trả lượt voucher sau thanh toán cần chốt."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "deliver",
+  "type": "sequence",
+  "input": "C:\\Users\\DWNG\\Documents\\CODE\\ĐỒ ÁN TỔNG HỢP\\database\\flow-diagrams\\05-thanh-toan.sequence.json",
+  "output": "C:\\Users\\DWNG\\Documents\\CODE\\ĐỒ ÁN TỔNG HỢP\\database\\flow-diagrams\\05-thanh-toan.html",
+  "specification": {
+    "sha256": "8751412ed8dc5c9e7e050e4d7abe7a31f3dacc3dd23eafc081a8700f72541b60",
+    "bytes": 4146
+  },
+  "artifact": {
+    "sha256": "05eee24b507cf67d24e96f6ced3dbe3383a2d2700c1e4f9d31669a3567e20640",
+    "bytes": 808292
+  },
+  "validation": {
+    "checksPassed": 9,
+    "checkCount": 9,
+    "compositionProfile": "showcase",
+    "compositionStatus": "pass",
+    "errors": 0,
+    "warnings": 0
+  }
+}

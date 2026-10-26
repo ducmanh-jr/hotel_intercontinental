@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "03 · Đăng ký và xác minh email",
+    "quality_profile": "showcase",
+    "column_fit": "spread",
+    "viewBox": [
+      1080,
+      882
+    ]
+  },
+  "participants": [
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "Trình duyệt",
+      "sublabel": "React"
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Spring Boot",
+      "sublabel": "Qua Cloudflare/Nginx"
+    },
+    {
+      "id": "pg",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "User · token · outbox"
+    },
+    {
+      "id": "mail",
+      "type": "external",
+      "label": "SMTP",
+      "sublabel": "Dịch vụ gửi email"
+    },
+    {
+      "id": "inbox",
+      "type": "external",
+      "label": "Hộp thư",
+      "sublabel": "Khách hàng"
+    }
+  ],
+  "messages": [
+    {
+      "id": "step_1",
+      "from": "web",
+      "to": "api",
+      "y": 190,
+      "label": "Gửi thông tin đăng ký qua /api",
+      "variant": "default"
+    },
+    {
+      "id": "step_2",
+      "from": "api",
+      "to": "pg",
+      "y": 244,
+      "label": "Kiểm tra email; lưu hash mật khẩu",
+      "variant": "default"
+    },
+    {
+      "id": "step_3",
+      "from": "api",
+      "to": "pg",
+      "y": 298,
+      "label": "Lưu token hash có hạn + outbox",
+      "variant": "emphasis"
+    },
+    {
+      "id": "step_4",
+      "from": "api",
+      "to": "web",
+      "y": 352,
+      "label": "Tài khoản chờ xác minh",
+      "variant": "return"
+    },
+    {
+      "id": "step_5",
+      "from": "api",
+      "to": "mail",
+      "y": 406,
+      "label": "Tác vụ nền gửi liên kết xác minh",
+      "variant": "dashed"
+    },
+    {
+      "id": "step_6",
+      "from": "mail",
+      "to": "inbox",
+      "y": 460,
+      "label": "SMTP chuyển email",
+      "variant": "dashed"
+    },
+    {
+      "id": "step_7",
+      "from": "inbox",
+      "to": "web",
+      "y": 514,
+      "label": "Khách bấm liên kết HTTPS",
+      "variant": "default"
+    },
+    {
+      "id": "step_8",
+      "from": "web",
+      "to": "api",
+      "y": 568,
+      "label": "Gửi mã xác minh qua /api",
+      "variant": "default"
+    },
+    {
+      "id": "step_9",
+      "from": "api",
+      "to": "pg",
+      "y": 622,
+      "label": "Kiểm tra hash, hạn, đã dùng, thu hồi",
+      "variant": "security"
+    },
+    {
+      "id": "step_10",
+      "from": "api",
+      "to": "pg",
+      "y": 676,
+      "label": "Ghi email_verified_at; dùng token một lần",
+      "variant": "emphasis"
+    },
+    {
+      "id": "step_11",
+      "from": "api",
+      "to": "web",
+      "y": 730,
+      "label": "Xác minh thành công hoặc lỗi rõ ràng",
+      "variant": "return"
+    },
+    {
+      "id": "step_12",
+      "from": "web",
+      "to": "api",
+      "y": 784,
+      "label": "Đăng nhập để thực hiện đặt phòng",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Phạm vi bằng chứng",
+      "items": [
+        "SMTP và hộp thư có trong ảnh; token và outbox lấy từ tài liệu nghiệp vụ.",
+        "Tác vụ nền là phần xử lý nội bộ được đề xuất, không thêm một container worker vào ảnh gốc."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Nhánh lỗi và bảo vệ",
+      "items": [
+        "Token hết hạn/đã dùng/bị thu hồi: từ chối, cho yêu cầu mã mới theo chính sách.",
+        "Đặt lại mật khẩu dùng token riêng; database chỉ lưu hash. email_verified_at cần cho phép NULL trước xác minh."
+      ]
+    }
+  ]
+}
