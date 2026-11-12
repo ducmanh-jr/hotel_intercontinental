@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #A67C37;
+  --color-primary-hover: #8E6728;
+  --color-primary-active: #73521D;
+  --color-primary-soft: #F9F5EB;
+  --color-primary-border: #DECBA4;
+
+  --color-secondary: #2C4A52;
+  --color-secondary-hover: #1F363C;
+  --color-secondary-soft: #F0F4F5;
+
+  --color-accent: #141413;
+  --color-accent-soft: #F3EFE6;
+  --color-gold-light: #E5C98B;
+  --color-gold-dark: #785718;
+
+  --color-canvas: #FAF8F5;
+  --color-surface: #FFFFFF;
+  --color-elevated: #F3EFE6;
+  --color-obsidian: #141413;
+
+  --color-text-primary: #141413;
+  --color-text-secondary: #524E46;
+  --color-text-muted: #7A7468;
+
+  --color-border-subtle: #E6E1D6;
+  --color-border-strong: #CFC7B8;
+
+  /* Warm Editorial theme tokens (from index.html prototype) */
+  --color-warm-bg: #fbf6ee;
+  --color-warm-surface: #fffdf8;
+  --color-warm-surface-warm: #f1e3cf;
+  --color-warm-fg: #201914;
+  --color-warm-fg-2: #4c4037;
+  --color-warm-muted: #6f6258;
+  --color-warm-accent: #9b5b32;
+  --color-warm-accent-hover: #7c4527;
+  --color-warm-accent-soft: #efdccb;
+  --color-warm-border: #ded2c3;
+  --color-warm-border-soft: #eee4d7;
+  --color-warm-border-strong: #9a8772;
+  --color-warm-danger: #b33a3a;
+
+  /* Teal Admin Console tokens (design.md) */
+  --color-admin-bg: #f4f8f7;
+  --color-admin-surface: #ffffff;
+  --color-admin-surface-soft: #f7fbfa;
+  --color-admin-teal: #0b5f53;
+  --color-admin-teal-dark: #08473e;
+  --color-admin-teal-soft: #d9f0ea;
+  --color-admin-teal-tint: #eef8f5;
+  --color-admin-ink: #12211d;
+  --color-admin-ink-2: #344a44;
+  --color-admin-muted: #5f736e;
+  --color-admin-border: #dce7e3;
+  --color-admin-border-strong: #bfd3cd;
+  --color-admin-success: #0f7a5f;
+  --color-admin-danger: #9b2c22;
+  --color-admin-chart-pending: #946412;
+  --color-admin-chart-confirmed: #4e9b86;
+  --color-admin-chart-completed: #0b5f53;
+  --color-admin-chart-cancel: #b45143;
+
+  --font-editorial: 'Cormorant Garamond', Georgia, serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 20px;
+
+  --shadow-floating: 0 16px 40px -10px rgba(20, 20, 19, 0.12), 0 4px 12px rgba(20, 20, 19, 0.04);
+  --shadow-card: 0 4px 20px rgba(20, 20, 19, 0.04);
+  --shadow-card-hover: 0 16px 36px -8px rgba(20, 20, 19, 0.12);
+}
+
+/* Base custom utility helpers for smooth luxury feel */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.luxury-gradient-text {
+  background: linear-gradient(135deg, #A67C37 0%, #D4AF37 50%, #8E6728 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

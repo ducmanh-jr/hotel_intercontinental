@@ -1,0 +1,95 @@
+name: Deploy staging
+
+# Chạy thủ công hoặc khi cấu hình staging thay đổi trên main.
+on:
+  workflow_dispatch:
+    inputs:
+      frontend_image:
+        description: "Frontend image kèm SHA-256 digest; bỏ trống để giữ phiên bản cũ"
+        type: string
+        required: false
+      backend_image:
+        description: "Backend image kèm SHA-256 digest; bỏ trống để giữ phiên bản cũ"
+        type: string
+        required: false
+  push:
+    branches: [main]
+    paths:
+      - compose.app.yaml
+      - compose/backend.yaml
+      - compose/frontend.yaml
+      - compose/postgres.yaml
+      - environments/staging/**
+      - scripts/*.sh
+      - .github/workflows/deploy-staging.yml
+
+# Workflow chỉ cần đọc source.
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+# Mỗi thời điểm chạy một deployment staging, không hủy lần đang chạy.
+concurrency:
+  group: hotel-booking-staging
+  cancel-in-progress: false
+  queue: max
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      # 1. Lấy source infra.
+      - name: Checkout infrastructure
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      # 2. Kiểm tra cú pháp và Compose bằng giá trị mẫu, không chạy container.
+      - name: Validate staging configuration
+        env:
+          FRONTEND_IMAGE: ghcr.io/68cs-hotel-booking-system/frontend@sha256:0000000000000000000000000000000000000000000000000000000000000000
+          BACKEND_IMAGE: ghcr.io/68cs-hotel-booking-system/backend-api@sha256:0000000000000000000000000000000000000000000000000000000000000000
+          POSTGRES_PASSWORD: validation-only
+          AUTH_JWT_SECRET_BASE64: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+          DEPLOY_ENVIRONMENT: staging
+          SPRING_PROFILES_ACTIVE: staging
+        run: |
+          set -euo pipefail
+          bash -n scripts/deploy.sh
+          bash -n scripts/health-check.sh
+          bash -n scripts/snapshot-release.sh
+          docker compose \
+            --file compose.app.yaml \
+            --env-file environments/staging/.env.example \
+            config --quiet
+
+      # 3. Dùng chung SSH/deploy/health/snapshot với production.
+      - name: Deploy staging and capture release snapshot
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+          NEW_FRONTEND_IMAGE: ${{ inputs.frontend_image }}
+          NEW_BACKEND_IMAGE: ${{ inputs.backend_image }}
+        run: |
+          bash scripts/remote-deploy.sh staging "$NEW_FRONTEND_IMAGE" "$NEW_BACKEND_IMAGE"
+
+      # 4. Giữ snapshot riêng cho mỗi deployment để Prepare release chọn lại.
+      - name: Upload staging release snapshot
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: staging-release
+          path: deployed-release.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Show QA deployment ID
+        run: |
+          jq . deployed-release.json
+          printf 'QA deployment ID: %s\n' "$GITHUB_RUN_ID" >> "$GITHUB_STEP_SUMMARY"

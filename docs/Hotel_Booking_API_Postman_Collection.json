@@ -1,0 +1,1465 @@
+{
+    "info":  {
+                 "_postman_id":  "hotel-booking-tv5-collection",
+                 "name":  "Hotel Booking API - Collection Kiểm Thử (Inventory \u0026 Pricing)",
+                 "description":  "Bộ Collection kiểm thử tự động các API Quản lý Khách sạn, Giá phòng (PR01/PR02/PR08), Khả dụng phòng liên tục (IV01/IV-13), Chặn phòng vật lý (BL-01..12), Lịch phòng và Vận hành lưu trú (BK-08..10, BK-14..18, IV-10..11).",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "variable":  [
+                     {
+                         "key":  "baseUrl",
+                         "value":  "http://localhost:8080",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "accessToken",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "hotelId",
+                         "value":  "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "roomTypeId",
+                         "value":  "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "roomId",
+                         "value":  "c2eebc99-9c0b-4ef8-bb6d-6bb9bd380a33",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "blockId",
+                         "value":  "d3eebc99-9c0b-4ef8-bb6d-6bb9bd380a44",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "bookingId",
+                         "value":  "e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a55",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "bookingItemId",
+                         "value":  "f5eebc99-9c0b-4ef8-bb6d-6bb9bd380a66",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "noShowBookingId",
+                         "value":  "e4eebc99-9c0b-4ef8-bb6d-6bb9bd380a77",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "expectedArrivalAt",
+                         "value":  "2026-11-10T18:00:00Z",
+                         "type":  "string"
+                     }
+                 ],
+    "item":  [
+                 {
+                     "name":  "1. Authentication",
+                     "item":  [
+                                  {
+                                      "name":  "1.1 Đăng nhập lấy Token",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Đăng nhập thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});",
+                                                                                    "",
+                                                                                    "var jsonData = pm.response.json();",
+                                                                                    "if (jsonData.data \u0026\u0026 jsonData.data.accessToken) {",
+                                                                                    "    pm.collectionVariables.set(\"accessToken\", jsonData.data.accessToken);",
+                                                                                    "    console.log(\"Saved accessToken to collection variables!\");",
+                                                                                    "}"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"email\": \"admin@hotel.com\",\n  \"password\": \"Password123456789!\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/auth/login",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "auth",
+                                                                               "login"
+                                                                           ]
+                                                              }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "2. Pricing (Quản lý giá - PR01, PR02, PR08)",
+                     "item":  [
+                                  {
+                                      "name":  "[PR02] Đặt giá phòng theo dải ngày",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Đặt giá thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});",
+                                                                                    "",
+                                                                                    "pm.test(\"Kiểm tra cấu trúc ApiResponse\", function () {",
+                                                                                    "    var res = pm.response.json();",
+                                                                                    "    pm.expect(res.data).to.have.property(\"rates\");",
+                                                                                    "    pm.expect(res.data.rates.length).to.be.at.least(1);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"startDate\": \"2026-12-01\",\n  \"endDateExclusive\": \"2026-12-04\",\n  \"amount\": 1200000\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/room-types/{{roomTypeId}}/rates",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "room-types",
+                                                                               "{{roomTypeId}}",
+                                                                               "rates"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[PR01] Tra cứu giá phòng chi tiết",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Tra cứu giá thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});",
+                                                                                    "",
+                                                                                    "pm.test(\"Kiểm tra danh sách giá các ngày\", function () {",
+                                                                                    "    var res = pm.response.json();",
+                                                                                    "    pm.expect(res.data).to.have.property(\"rates\");",
+                                                                                    "    pm.expect(res.data.rates.length).to.be.at.least(1);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/room-types/{{roomTypeId}}/rates?startDate=2026-12-01\u0026endDate=2026-12-03",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "room-types",
+                                                                               "{{roomTypeId}}",
+                                                                               "rates"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "startDate",
+                                                                                    "value":  "2026-12-01"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "endDate",
+                                                                                    "value":  "2026-12-03"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "3. Inventory - Khả dụng \u0026 Lịch phòng (IV01, IV-13)",
+                     "item":  [
+                                  {
+                                      "name":  "[IV01] Tra cứu khả dụng phòng liên tục (Public)",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Khả dụng thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});",
+                                                                                    "pm.test(\"Trả về danh sách loại phòng khả dụng\", function () {",
+                                                                                    "    var res = pm.response.json();",
+                                                                                    "    pm.expect(res.data.roomTypes).to.be.an(\"array\");",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/hotels/{{hotelId}}/availability?checkInDate=2026-12-01\u0026checkOutDate=2026-12-04\u0026rooms=1\u0026adults=2\u0026children=0",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "availability"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "checkInDate",
+                                                                                    "value":  "2026-12-01"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "checkOutDate",
+                                                                                    "value":  "2026-12-04"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "rooms",
+                                                                                    "value":  "1"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "adults",
+                                                                                    "value":  "2"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "children",
+                                                                                    "value":  "0"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[Calendar] Xem lịch phòng vật lý và tổng hợp tồn kho",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Lấy lịch phòng thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});",
+                                                                                    "pm.test(\"Trả về danh sách roomTypes và dailySummaries\", function () {",
+                                                                                    "    var res = pm.response.json();",
+                                                                                    "    pm.expect(res.data.roomTypes).to.be.an(\"array\");",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/room-calendar?startDate=2026-12-01\u0026endDate=2026-12-10\u0026roomTypeId={{roomTypeId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "room-calendar"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "startDate",
+                                                                                    "value":  "2026-12-01"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "endDate",
+                                                                                    "value":  "2026-12-10"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "roomTypeId",
+                                                                                    "value":  "{{roomTypeId}}"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "4. Inventory - Quản lý chặn phòng vật lý (BL-01..12)",
+                     "item":  [
+                                  {
+                                      "name":  "[BL-01] Tạo lịch chặn phòng vật lý",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 201 - Tạo lịch chặn thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(201);",
+                                                                                    "});",
+                                                                                    "var res = pm.response.json();",
+                                                                                    "if (res.data \u0026\u0026 res.data.id) {",
+                                                                                    "    pm.collectionVariables.set(\"blockId\", res.data.id);",
+                                                                                    "}"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"roomId\": \"{{roomId}}\",\n  \"startDate\": \"2026-12-05\",\n  \"endDate\": \"2026-12-06\",\n  \"reason\": \"Bảo trì hệ thống điều hòa phòng\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/room-blocks",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "room-blocks"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[BL-02] Danh sách lịch chặn phòng",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Lấy danh sách lịch chặn thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/room-blocks?startDate=2026-12-01\u0026endDate=2026-12-10",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "room-blocks"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "startDate",
+                                                                                    "value":  "2026-12-01"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "endDate",
+                                                                                    "value":  "2026-12-10"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[BL-06] Cập nhật / Gia hạn lịch chặn phòng",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Cập nhật lịch chặn thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "PATCH",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"startDate\": \"2026-12-05\",\n  \"endDate\": \"2026-12-07\",\n  \"reason\": \"Gia hạn bảo trì điều hòa thêm 1 đêm\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/room-blocks/{{blockId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "room-blocks",
+                                                                               "{{blockId}}"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[BL-10] Giải phóng lịch chặn phòng (Idempotent)",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Giải phóng lịch chặn thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});",
+                                                                                    "var res = pm.response.json();",
+                                                                                    "pm.test(\"Trạng thái lịch chặn là RELEASED\", function () {",
+                                                                                    "    pm.expect(res.data.status).to.eql(\"RELEASED\");",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"reason\": \"Hoàn tất bảo trì sớm hơn dự kiến\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/room-blocks/{{blockId}}/release",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "room-blocks",
+                                                                               "{{blockId}}",
+                                                                               "release"
+                                                                           ]
+                                                              }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "5. Inventory - Phân phòng \u0026 Vận hành lưu trú (BK-08..10, BK-14..18)",
+                     "item":  [
+                                  {
+                                      "name":  "[BK-15/16] Phân công hoặc đổi phòng vật lý",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Phân phòng thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"assignments\": [\n    {\n      \"bookingItemId\": \"{{bookingItemId}}\",\n      \"roomIds\": [\"{{roomId}}\"]\n    }\n  ],\n  \"reason\": \"Phân phòng cho khách trước giờ nhận phòng\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/bookings/{{bookingId}}/room-assignments",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "bookings",
+                                                                               "{{bookingId}}",
+                                                                               "room-assignments"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[Readiness] Cập nhật trạng thái buồng phòng READY / DIRTY",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Cập nhật trạng thái buồng phòng thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "PATCH",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"readiness\": \"READY\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/rooms/{{roomId}}/readiness",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "rooms",
+                                                                               "{{roomId}}",
+                                                                               "readiness"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[BK-09] Ghi nhận khách đến nhận phòng muộn",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "prerequest",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "var lateTime = new Date(Date.now() + 2 * 3600 * 1000).toISOString();",
+                                                                                    "pm.collectionVariables.set(\"expectedArrivalAt\", lateTime);"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    },
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Ghi nhận đến muộn thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"expectedArrivalAt\": \"{{expectedArrivalAt}}\",\n  \"note\": \"Khách báo chuyến bay trễ, nhận phòng muộn\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/bookings/{{bookingId}}/late-arrival",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "bookings",
+                                                                               "{{bookingId}}",
+                                                                               "late-arrival"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[BK-08] Làm thủ tục nhận phòng (Check-in)",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Nhận phòng thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "POST",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/bookings/{{bookingId}}/check-in",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "bookings",
+                                                                               "{{bookingId}}",
+                                                                               "check-in"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[BK-18, IV-10] Làm thủ tục trả phòng (Check-out)",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Trả phòng thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "POST",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/bookings/{{bookingId}}/check-out",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "bookings",
+                                                                               "{{bookingId}}",
+                                                                               "check-out"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[BK-10, IV-11] Đánh dấu khách không đến (No-show)",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Đánh dấu No-show thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"reason\": \"Quá hạn nhận phòng tiêu chuẩn và không liên lạc được với khách\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/bookings/{{noShowBookingId}}/no-show",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "bookings",
+                                                                               "{{noShowBookingId}}",
+                                                                               "no-show"
+                                                                           ]
+                                                              }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "6. Hotel Management (Loại phòng \u0026 Phòng - HT17 \u0026 HT21)",
+                     "item":  [
+                                  {
+                                      "name":  "[HT17] Cập nhật thông tin / Ngừng bán loại phòng",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Cập nhật loại phòng thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});",
+                                                                                    "var res = pm.response.json();",
+                                                                                    "pm.test(\"Trạng thái active là true\", function () {",
+                                                                                    "    pm.expect(res.data.active).to.eql(true);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "PATCH",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"name\": \"Phòng Deluxe Giường Đôi (Cập nhật)\",\n  \"active\": true\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/room-types/{{roomTypeId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "room-types",
+                                                                               "{{roomTypeId}}"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[HT21] Cập nhật thông tin phòng vật lý",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200 - Cập nhật phòng thành công\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "PATCH",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"roomNumber\": \"301-B\",\n  \"status\": \"ready\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/rooms/{{roomId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "rooms",
+                                                                               "{{roomId}}"
+                                                                           ]
+                                                              }
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "7. Quote \u0026 Kiểm thử biên (Edge cases - không phụ thuộc thứ tự chạy)",
+                     "item":  [
+                                  {
+                                      "name":  "[Quote] Báo giá lưu trú (StayQuote - module pricing)",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 200\", function () {",
+                                                                                    "    pm.response.to.have.status(200);",
+                                                                                    "});",
+                                                                                    "pm.test(\"Có tổng tiền và số đêm\", function () {",
+                                                                                    "    var d = pm.response.json().data;",
+                                                                                    "    pm.expect(d.nights).to.be.a(\"number\");",
+                                                                                    "    pm.expect(d.totalAmount).to.be.above(0);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"checkIn\": \"2026-12-01\",\n  \"checkOut\": \"2026-12-04\",\n  \"items\": [\n    { \"roomTypeId\": \"{{roomTypeId}}\", \"quantity\": 1, \"adults\": 2, \"children\": 0 }\n  ]\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/hotels/{{hotelId}}/quote",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "quote"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[Edge Quote] Ngày trả phòng trước ngày nhận phòng -\u003e 400",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 400\", function () {",
+                                                                                    "    pm.response.to.have.status(400);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"checkIn\": \"2026-12-04\",\n  \"checkOut\": \"2026-12-01\",\n  \"items\": [\n    { \"roomTypeId\": \"{{roomTypeId}}\", \"quantity\": 1, \"adults\": 2, \"children\": 0 }\n  ]\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/hotels/{{hotelId}}/quote",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "quote"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[Edge IV] Khả dụng với ngày trả phòng trước ngày nhận -\u003e 400",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 400\", function () {",
+                                                                                    "    pm.response.to.have.status(400);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/hotels/{{hotelId}}/availability?checkInDate=2026-12-04\u0026checkOutDate=2026-12-01\u0026rooms=1\u0026adults=2\u0026children=0",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "availability"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "checkInDate",
+                                                                                    "value":  "2026-12-04"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "checkOutDate",
+                                                                                    "value":  "2026-12-01"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "rooms",
+                                                                                    "value":  "1"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "adults",
+                                                                                    "value":  "2"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "children",
+                                                                                    "value":  "0"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[Edge PR-01] Đặt giá phòng với số tiền bằng 0 -\u003e 400",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 400\", function () {",
+                                                                                    "    pm.response.to.have.status(400);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"startDate\": \"2026-12-01\",\n  \"endDateExclusive\": \"2026-12-02\",\n  \"amount\": 0\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/room-types/{{roomTypeId}}/rates",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "room-types",
+                                                                               "{{roomTypeId}}",
+                                                                               "rates"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[Edge PR-02] Đặt giá phòng cho ngày trong quá khứ -\u003e 400",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 400\", function () {",
+                                                                                    "    pm.response.to.have.status(400);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"startDate\": \"2020-01-01\",\n  \"endDateExclusive\": \"2020-01-02\",\n  \"amount\": 1000000\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/room-types/{{roomTypeId}}/rates",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "room-types",
+                                                                               "{{roomTypeId}}",
+                                                                               "rates"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[Edge BL-04] Tạo lịch chặn phòng cho ngày quá khứ -\u003e 400",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 400\", function () {",
+                                                                                    "    pm.response.to.have.status(400);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"roomId\": \"{{roomId}}\",\n  \"startDate\": \"2020-05-01\",\n  \"endDate\": \"2020-05-02\",\n  \"reason\": \"Chặn ngày quá khứ\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/room-blocks",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "room-blocks"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[Edge BL-01] Tạo lịch chặn phòng thiếu lý do -\u003e 400",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 400\", function () {",
+                                                                                    "    pm.response.to.have.status(400);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{accessToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"roomId\": \"{{roomId}}\",\n  \"startDate\": \"2026-12-20\",\n  \"endDate\": \"2026-12-21\",\n  \"reason\": \"\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/room-blocks",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "room-blocks"
+                                                                           ]
+                                                              }
+                                                  }
+                                  },
+                                  {
+                                      "name":  "[Edge Auth] Gọi API quản lý giá không có token -\u003e 401",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\"Status code is 401\", function () {",
+                                                                                    "    pm.response.to.have.status(401);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"startDate\": \"2026-12-01\",\n  \"endDateExclusive\": \"2026-12-02\",\n  \"amount\": 1000000\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/v1/management/hotels/{{hotelId}}/room-types/{{roomTypeId}}/rates",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "v1",
+                                                                               "management",
+                                                                               "hotels",
+                                                                               "{{hotelId}}",
+                                                                               "room-types",
+                                                                               "{{roomTypeId}}",
+                                                                               "rates"
+                                                                           ]
+                                                              }
+                                                  }
+                                  }
+                              ]
+                 }
+             ]
+}

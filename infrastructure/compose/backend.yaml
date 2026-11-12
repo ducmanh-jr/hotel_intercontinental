@@ -1,0 +1,44 @@
+services:
+  backend:
+    image: ${BACKEND_IMAGE:?Missing BACKEND_IMAGE}
+    restart: unless-stopped
+
+    # Chờ database sẵn sàng trước khi chạy backend.
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    environment:
+      SERVER_PORT: "8080"
+      SPRING_PROFILES_ACTIVE: staging
+
+      # postgres là tên service trong mạng Docker.
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:?Missing POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:?Missing POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?Missing POSTGRES_PASSWORD}
+      SPRING_FLYWAY_ENABLED: "true"
+
+      AUTH_JWT_SECRET_BASE64: ${AUTH_JWT_SECRET_BASE64:?Missing AUTH_JWT_SECRET_BASE64}
+      AUTH_VERIFICATION_URL: ${AUTH_VERIFICATION_URL:?Missing AUTH_VERIFICATION_URL}
+      AUTH_MAIL_FROM: ${AUTH_MAIL_FROM:?Missing AUTH_MAIL_FROM}
+      AUTH_PASSWORD_RESET_URL: ${AUTH_PASSWORD_RESET_URL:?Missing AUTH_PASSWORD_RESET_URL}
+
+      MAIL_HOST: ${MAIL_HOST:?Missing MAIL_HOST}
+      MAIL_PORT: "${MAIL_PORT:?Missing MAIL_PORT}"
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_SMTP_AUTH: "${MAIL_SMTP_AUTH:-false}"
+      MAIL_STARTTLS_ENABLE: "${MAIL_STARTTLS_ENABLE:-false}"
+      MAIL_STARTTLS_REQUIRED: "${MAIL_STARTTLS_REQUIRED:-false}"
+
+      R2_ENABLED: "${R2_ENABLED:-false}"
+      R2_ENDPOINT: "${R2_ENDPOINT:-}"
+      R2_ACCESS_KEY_ID: "${R2_ACCESS_KEY_ID:-}"
+      R2_SECRET_ACCESS_KEY: "${R2_SECRET_ACCESS_KEY:-}"
+      R2_BUCKET: "${R2_BUCKET:-}"
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

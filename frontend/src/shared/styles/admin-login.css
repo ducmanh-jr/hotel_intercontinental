@@ -1,0 +1,342 @@
+/* ==========================================================================
+   Admin Login — Warm Editorial Design System Specification (design.md)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.admin-login-shell {
+  --bg: #fbf6ee;
+  --surface: #fffdf8;
+  --surface-warm: #f1e3cf;
+  --fg: #201914;
+  --fg-2: #4c4037;
+  --muted: #6f6258;
+  --accent: #9b5b32;
+  --accent-hover: #7c4527;
+  --accent-soft: #efdccb;
+  --border: #ded2c3;
+  --border-soft: #eee4d7;
+  --border-strong: #9a8772;
+  --success: #467d46;
+  --warn: #b06a24;
+  --warn-ink: #82501c;
+  --danger: #b33a3a;
+
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-body: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --dur-short: 150ms;
+  --dur-medium: 260ms;
+
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--fg);
+  background-color: var(--bg);
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.admin-login-shell * {
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Typography Rules (design.md §3.2)
+   ========================================================================== */
+
+/* Display Serif Font (Headings, wordmarks, dialog) */
+.admin-login-shell .admin-font-display {
+  font-family: var(--font-display) !important;
+}
+
+/* Body Sans-serif Font (Body, form, controls, buttons) */
+.admin-login-shell .admin-font-body {
+  font-family: var(--font-body) !important;
+}
+
+/* 1. H1 Main Heading */
+.admin-login-shell .admin-h1 {
+  font-family: var(--font-display) !important;
+  font-weight: 400 !important;
+  font-size: clamp(46px, 4.2vw, 62px);
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  color: var(--fg);
+  text-wrap: balance;
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .admin-login-shell .admin-h1 {
+    font-size: 42px;
+  }
+}
+
+@media (max-width: 360px) {
+  .admin-login-shell .admin-h1 {
+    font-size: 38px;
+  }
+}
+
+.admin-login-shell .admin-h1 em {
+  font-style: italic;
+  font-weight: 400 !important;
+  color: var(--accent);
+}
+
+/* 2. Brand Headline (Caption Card) */
+.admin-login-shell .admin-brand-headline {
+  font-family: var(--font-display) !important;
+  font-weight: 400 !important;
+  font-size: clamp(30px, 2.6vw, 40px);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  text-wrap: balance;
+  margin: 0;
+}
+
+.admin-login-shell .admin-brand-headline em {
+  font-style: italic;
+  font-weight: 400 !important;
+  color: var(--accent);
+}
+
+/* 3. Brand Wordmark / Logos */
+.admin-login-shell .admin-brand-logo-text {
+  font-family: var(--font-display) !important;
+  font-weight: 700 !important;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+
+.admin-login-shell .admin-mobile-logo-text {
+  font-family: var(--font-display) !important;
+  font-weight: 700 !important;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+
+/* 4. Dialog Heading */
+.admin-login-shell .admin-dialog-heading {
+  font-family: var(--font-display) !important;
+  font-weight: 400 !important;
+  font-size: 32px;
+  line-height: 1.1;
+  color: var(--fg);
+  margin: 0;
+}
+
+/* 5. Lede Paragraph */
+.admin-login-shell .admin-lede {
+  font-family: var(--font-body) !important;
+  font-weight: 400 !important;
+  font-size: 16px;
+  line-height: 26px;
+  max-width: 42ch;
+  color: var(--fg-2);
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+@media (max-width: 480px) {
+  .admin-login-shell .admin-lede {
+    font-size: 15px;
+    line-height: 24px;
+  }
+}
+
+/* 6. Field Labels */
+.admin-login-shell .admin-field-label {
+  font-family: var(--font-body) !important;
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600 !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color var(--dur-short) var(--ease-out);
+  user-select: none;
+}
+
+.admin-login-shell .admin-field-label.is-error {
+  color: var(--danger) !important;
+}
+
+/* 7. Input Text */
+.admin-login-shell .admin-field-input {
+  font-family: var(--font-body) !important;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 400 !important;
+  color: var(--fg);
+  height: 46px;
+  padding: 4px 0 10px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  width: 100%;
+  caret-color: var(--accent);
+}
+
+/* 8. Checkbox Label */
+.admin-login-shell .admin-remember-label {
+  font-family: var(--font-body) !important;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400 !important;
+  color: var(--fg-2);
+  user-select: none;
+}
+
+/* 9. Links ("Quên mật khẩu?", "Cần hỗ trợ?") */
+.admin-login-shell .admin-link-btn {
+  font-family: var(--font-body) !important;
+  font-size: 14px;
+  font-weight: 500 !important;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--accent-soft);
+  transition: color var(--dur-short) var(--ease-out), text-decoration-color var(--dur-short) var(--ease-out);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.admin-login-shell .admin-link-btn:hover {
+  color: var(--accent-hover);
+  text-decoration-color: currentColor;
+}
+
+/* 10. Top Bar Back Link ("Về trang khách") */
+.admin-login-shell .admin-back-link {
+  font-family: var(--font-body) !important;
+  font-size: 14px;
+  font-weight: 500 !important;
+  color: var(--fg-2);
+  text-decoration: none;
+  transition: color var(--dur-short) var(--ease-out);
+}
+
+.admin-login-shell .admin-back-link:hover {
+  color: var(--accent);
+}
+
+/* 11. Primary Submit Button */
+.admin-login-shell .admin-primary-btn {
+  font-family: var(--font-body) !important;
+  font-size: 15px;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em;
+  color: var(--surface) !important;
+  background-color: var(--accent) !important;
+  border: 1px solid var(--accent) !important;
+  border-radius: var(--radius-md);
+  height: 54px;
+  padding: 0 20px;
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 2px 0 rgba(32, 25, 20, 0.05);
+  transition: background-color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
+}
+
+.admin-login-shell .admin-primary-btn:hover:not(:disabled) {
+  background-color: var(--accent-hover) !important;
+  border-color: var(--accent-hover) !important;
+}
+
+.admin-login-shell .admin-primary-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.admin-login-shell .admin-primary-btn:disabled {
+  opacity: 0.85;
+  cursor: progress;
+}
+
+/* 12. Footers */
+.admin-login-shell .admin-panel-foot {
+  font-family: var(--font-body) !important;
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600 !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.admin-login-shell .admin-brand-caption-foot {
+  font-family: var(--font-body) !important;
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600 !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* 13. Support Text & Secure Note */
+.admin-login-shell .admin-support-text {
+  font-family: var(--font-body) !important;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400 !important;
+  color: var(--muted);
+}
+
+/* 14. Dialog Body & Close */
+.admin-login-shell .admin-dialog-body {
+  font-family: var(--font-body) !important;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 400 !important;
+  color: var(--fg-2);
+}
+
+.admin-login-shell .admin-dialog-close-btn {
+  font-family: var(--font-body) !important;
+  font-size: 14px;
+  font-weight: 600 !important;
+  color: var(--fg);
+}
+
+/* Components card wrappers */
+.admin-login-shell .admin-brand-badge {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-md);
+}
+
+.admin-login-shell .admin-brand-caption {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-md);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
